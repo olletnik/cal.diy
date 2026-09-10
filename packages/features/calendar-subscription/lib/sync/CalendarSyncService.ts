@@ -131,7 +131,7 @@ export class CalendarSyncService {
           cancellationReason: "Cancelled on user's calendar",
           cancelledBy: booking.userPrimaryEmail,
           // Skip calendar event deletion to avoid infinite loops
-          // (Google/Office365 → Cal.diy → Google/Office365 → ...)
+          // (Google/Office365 → Terminbuchung → Google/Office365 → ...)
           skipCalendarSyncTaskCancellation: true,
         },
       });
@@ -213,7 +213,7 @@ export class CalendarSyncService {
         bookingData: buildRescheduleBookingData(booking, event),
         bookingMeta: {
           // Skip calendar event creation to avoid infinite loops
-          // (Google/Office365 → Cal.diy → Google/Office365 → ...)
+          // (Google/Office365 → Terminbuchung → Google/Office365 → ...)
           skipCalendarSyncTaskCreation: true,
           skipAvailabilityCheck: true,
           skipEventLimitsCheck: true,
@@ -259,7 +259,7 @@ export const buildRescheduleBookingData = (
   const fallbackStart = booking.startTime.toISOString();
   const start = event.start?.toISOString() ?? fallbackStart;
 
-  // Keep the original booking duration — external calendar controls "when", Cal.diy controls "how long"
+  // Keep the original booking duration — external calendar controls "when", Terminbuchung controls "how long"
   const originalDurationMs = booking.endTime.getTime() - booking.startTime.getTime();
   const end = new Date(new Date(start).getTime() + originalDurationMs).toISOString();
 

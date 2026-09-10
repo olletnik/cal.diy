@@ -85,6 +85,9 @@ export async function getHideBranding({
 /**
  * Determines if branding should be hidden for an event that could be a team event or user event
  */
+// Kintello: Powered-by-Hinweis grundsaetzlich ausblenden (Whitelabel)
+const ALWAYS_HIDE_BRANDING = true;
+
 export function shouldHideBrandingForEventUsingProfile({
   eventTypeId,
   owner,
@@ -94,6 +97,7 @@ export function shouldHideBrandingForEventUsingProfile({
   team: Team | null;
   eventTypeId: number;
 }) {
+  if (ALWAYS_HIDE_BRANDING) return true;
   let hideBranding;
   if (team) {
     hideBranding = resolveHideBranding({

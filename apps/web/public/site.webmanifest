@@ -1,7 +1,7 @@
 {
-    "name": "Cal.diy",
-    "short_name": "Cal.diy",
-    "description": "Scheduling infrastructure for absolutely everyone.",
+    "name": "Terminbuchung",
+    "short_name": "Terminbuchung",
+    "description": "Online-Terminbuchung von Kintello",
     "icons": [
         {
             "src": "/api/logo?type=android-chrome-192",
