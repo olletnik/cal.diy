@@ -1,0 +1,77 @@
+# Kintello: baut das Cal.diy-Image aus diesem Fork und pusht nach GHCR.
+# Ausloeser: Push auf Branch "kintello" oder manuell (workflow_dispatch).
+# Abgeleitet von .github/actions/docker-build-and-test (Upstream), ohne Docker Hub / Slack.
+name: Kintello Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [kintello]
+    paths-ignore: ["**.md"]
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: kintello-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & Push (amd64)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Copy env
+        run: |
+          grep -o '^[^#]*' .env.example > .env
+
+      - name: Start database (wird beim Build gebraucht)
+        run: |
+          docker compose up -d database
+          for i in $(seq 1 30); do docker compose exec -T database pg_isready -U unicorn_user && break; sleep 2; done
+          docker compose ps database
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            network=container:database
+          buildkitd-flags: |
+            --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ghcr.io/olletnik/cal.diy:kintello
+            ghcr.io/olletnik/cal.diy:kintello-${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/olletnik/cal.diy
+            org.opencontainers.image.revision=${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_WEBAPP_URL=http://localhost:3000
+            NEXT_PUBLIC_API_V2_URL=http://localhost:5555/api/v2
+            NEXT_PUBLIC_LICENSE_CONSENT=agree
+            CALCOM_TELEMETRY_DISABLED=1
+            DATABASE_URL=postgresql://unicorn_user:magical_password@localhost:5432/calendso
+            DATABASE_DIRECT_URL=postgresql://unicorn_user:magical_password@localhost:5432/calendso
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down || true
