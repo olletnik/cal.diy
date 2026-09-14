@@ -19,7 +19,8 @@ const timezoneLocalStorageKey = "timeOption.preferredTimeZone";
  * any changes made in the user settings.
  */
 export const timePreferencesStore = create<TimePreferencesStore>((set) => ({
-  timeFormat: detectBrowserTimeFormat,
+  // Kintello: immer 24-Stunden-Format statt Browser-Erkennung
+  timeFormat: TimeFormat.TWENTY_FOUR_HOUR,
   setTimeFormat: (format: TimeFormat.TWELVE_HOUR | TimeFormat.TWENTY_FOUR_HOUR) => {
     setIs24hClockInLocalStorage(format === TimeFormat.TWENTY_FOUR_HOUR);
     set({ timeFormat: format });

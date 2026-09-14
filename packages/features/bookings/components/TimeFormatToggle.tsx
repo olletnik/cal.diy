@@ -4,7 +4,11 @@ import { ToggleGroup } from "@calcom/ui/components/form";
 
 import { useTimePreferences } from "@calcom/features/bookings/lib";
 
+const KINTELLO_HIDE_TIME_FORMAT_TOGGLE = true;
+
 export const TimeFormatToggle = ({ customClassName }: { customClassName?: string }) => {
+  // Kintello: Umschalter 12/24 Std ausgeblendet, in Deutschland gilt durchgehend 24 Std
+  if (KINTELLO_HIDE_TIME_FORMAT_TOGGLE) return null;
   const timeFormat = useTimePreferences((state) => state.timeFormat);
   const setTimeFormat = useTimePreferences((state) => state.setTimeFormat);
   const { t } = useLocale();
