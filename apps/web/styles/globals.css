@@ -422,3 +422,11 @@ html[dir="rtl"] .react-tel-input .flag-dropdown {
   left: auto !important;
   right: 0 !important;
 }
+
+/* Kintello: weichere Rundungen, passend zu den Kundenwebsites (Kinderschutzbund: 14-18px) */
+:root {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}

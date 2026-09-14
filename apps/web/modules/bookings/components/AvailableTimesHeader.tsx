@@ -50,7 +50,9 @@ export const AvailableTimesHeader = ({
             isToday && !customClassNames?.availableTimeSlotsTitle && "!text-default",
             customClassNames?.availableTimeSlotsTitle
           )}>
-          {nameOfDay(i18n.language, Number(date.format("d")), "short")}
+          {isMonthView
+            ? nameOfDay(i18n.language, Number(date.format("d")), "long")
+            : nameOfDay(i18n.language, Number(date.format("d")), "short")}
         </span>
         <span
           className={classNames(
@@ -60,8 +62,11 @@ export const AvailableTimesHeader = ({
               ? `text-default text-sm ${customClassNames?.availableTimeSlotsTitle}`
               : `text-xs ${customClassNames?.availableTimeSlotsTitle}`
           )}>
-          {date.format("DD")}
-          {availableMonth && `, ${availableMonth}`}
+          {isMonthView
+            ? // Kintello: deutsches Langformat "4. Dezember" statt "04"
+              new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "long" }).format(date.toDate())
+            : date.format("DD")}
+          {!isMonthView && availableMonth && `, ${availableMonth}`}
         </span>
       </span>
 

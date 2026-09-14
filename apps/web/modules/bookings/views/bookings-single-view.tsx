@@ -9,6 +9,9 @@ import { Fragment, useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import { z } from "zod";
 
+// Kintello: keine Links zu Google/Microsoft-Kalendern auf der Bestaetigungsseite (nur ICS-Datei)
+const KINTELLO_EXTERNAL_CALENDAR_LINKS = false;
+
 import BookingPageTagManager from "@calcom/app-store/BookingPageTagManager";
 import type { getEventLocationValue } from "@calcom/app-store/locations";
 import { getSuccessPageLocationMessage, guessEventLocationType } from "@calcom/app-store/locations";
@@ -968,7 +971,7 @@ export default function Success(props: PageProps) {
                             {t("add_to_calendar")}
                           </span>
                           <div className="justify-left mt-1 flex text-left sm:mt-0">
-                            {googleCalendarLink && (
+                            {KINTELLO_EXTERNAL_CALENDAR_LINKS && googleCalendarLink && (
                               <Link
                                 href={googleCalendarLink}
                                 className="text-default border-subtle h-10 w-10 rounded-sm border px-3 py-2 ltr:mr-2 rtl:ml-2"
@@ -983,7 +986,7 @@ export default function Success(props: PageProps) {
                                 </svg>
                               </Link>
                             )}
-                            {microsoftOutlookLink && (
+                            {KINTELLO_EXTERNAL_CALENDAR_LINKS && microsoftOutlookLink && (
                               <Link
                                 href={microsoftOutlookLink}
                                 className="border-subtle text-default mx-2 h-10 w-10 rounded-sm border px-3 py-2"
@@ -998,7 +1001,7 @@ export default function Success(props: PageProps) {
                                 </svg>
                               </Link>
                             )}
-                            {microsoftOfficeLink && (
+                            {KINTELLO_EXTERNAL_CALENDAR_LINKS && microsoftOfficeLink && (
                               <Link
                                 href={microsoftOfficeLink}
                                 className="text-default border-subtle mx-2 h-10 w-10 rounded-sm border px-3 py-2"
